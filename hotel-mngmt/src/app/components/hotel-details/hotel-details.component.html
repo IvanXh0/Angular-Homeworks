@@ -3,7 +3,7 @@
     <img
       mat-card-image
       [src]="selectedHotel.image"
-      alt="{{ selectedHotel.name }}"
+      [alt]="selectedHotel.name"
     />
     <mat-card-content>
       <h2>{{ selectedHotel.name }}</h2>
@@ -20,7 +20,7 @@
   <h3>Rooms:</h3>
   <div>
     <div class="room-card" *ngFor="let room of selectedHotel?.rooms">
-      <img mat-list-avatar [src]="room.image" alt="{{ room.name }}" />
+      <img mat-list-avatar [src]="room.image" [alt]="room.name" />
       <h3 mat-line>{{ room.name }}</h3>
       <p mat-line>{{ room.description }}</p>
       <p mat-line>Price: {{ room.price | currency : "USD" : "symbol" }}</p>

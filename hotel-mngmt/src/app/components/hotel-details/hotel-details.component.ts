@@ -308,12 +308,12 @@ export class HotelDetailsComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute, private titleService: Title) {}
 
   generateRandomImage() {
-    for (let i = 0; i < this.hotels.length; i++) {
-      this.hotels[i].image = `https://source.unsplash.com/random/?hotel-resort`;
-      this.hotels[i].rooms.forEach((room) => {
+    this.hotels.map((hotel) => {
+      hotel.image = `https://source.unsplash.com/random/?hotel-resort`;
+      hotel.rooms.forEach((room) => {
         room.image = `https://source.unsplash.com/random/?hotel-room`;
       });
-    }
+    });
   }
 
   ngOnInit(): void {
