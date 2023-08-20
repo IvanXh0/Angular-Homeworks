@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IHotel } from '../inerfaces/hotel-inerface';
+import { IHotel } from '../interfaces/hotel-interface';
 
 @Injectable({
   providedIn: 'root',
@@ -306,6 +306,18 @@ export class HotelsService {
 
   getHotelById(id: number): IHotel | undefined {
     return this.hotels.find((hotel) => hotel.id === id);
+  }
+
+  addHotel(hotel: IHotel): void {
+    this.hotels.push(hotel);
+  }
+
+  updateHotel(hotel: IHotel): void {
+    const index = this.hotels.findIndex((h) => h.id === hotel.id);
+    this.hotels[index] = {
+      ...this.hotels[index],
+      ...hotel,
+    };
   }
 
   generateRandomImage() {

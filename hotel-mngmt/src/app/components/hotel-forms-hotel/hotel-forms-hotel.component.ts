@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { IRoom } from '../../interfaces/room-interface';
 import { HotelsService } from 'src/app/services/hotels.service';
+import { IHotel } from 'src/app/interfaces/hotel-interface';
+import { FormUtilsService } from 'src/app/services/form-utils.service';
 
 @Component({
   selector: 'app-hotel-forms-hotel',
   templateUrl: './hotel-forms-hotel.component.html',
   styleUrls: ['./hotel-forms-hotel.component.css'],
 })
-export class HotelFormsHotelComponent implements OnInit {
+export class HotelFormsHotelComponent implements OnInit, OnDestroy {
   hotelForm = new FormGroup({
     id: new FormControl<number>(Date.now()),
     name: new FormControl<string>(
@@ -54,8 +57,9 @@ export class HotelFormsHotelComponent implements OnInit {
     ),
     image: new FormControl<string>(
       '',
-      Validators.compose([Validators.required])
+      Validators.compose([Validators.required, Validators.minLength(3)])
     ),
+    rooms: new FormControl<IRoom[]>([]),
   });
 
   private paramMapSubscription: Subscription | undefined;
@@ -65,8 +69,44 @@ export class HotelFormsHotelComponent implements OnInit {
   constructor(
     private hotelsService: HotelsService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private formUtils: FormUtilsService
   ) {}
+
+  isFieldInvalid(fieldName: string): boolean {
+    const control = this.hotelForm.get(fieldName);
+    return this.formUtils.isFieldInvalid(control);
+  }
+
+  isFieldTouchedOrDirty(fieldName: string): boolean {
+    const control = this.hotelForm.get(fieldName);
+    return this.formUtils.isFieldTouchedOrDirty(control);
+  }
+
+  isRequired(fieldName: string): boolean {
+    const control = this.hotelForm.get(fieldName);
+    return this.formUtils.isRequired(control);
+  }
+
+  isMinLength(fieldName: string): boolean {
+    const control = this.hotelForm.get(fieldName);
+    return this.formUtils.isMinLength(control);
+  }
+
+  isMaxLength(fieldName: string): boolean {
+    const control = this.hotelForm.get(fieldName);
+    return this.formUtils.isMaxLength(control);
+  }
+
+  isMin(fieldName: string): boolean {
+    const control = this.hotelForm.get(fieldName);
+    return this.formUtils.isMin(control);
+  }
+
+  isMax(fieldName: string): boolean {
+    const control = this.hotelForm.get(fieldName);
+    return this.formUtils.isMax(control);
+  }
 
   ngOnInit(): void {
     this.paramMapSubscription = this.route.paramMap.subscribe((params) => {
@@ -78,9 +118,27 @@ export class HotelFormsHotelComponent implements OnInit {
 
         if (hotel) {
           this.hotelForm.patchValue(hotel);
-          console.log(hotel);
         }
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.paramMapSubscription?.unsubscribe();
+  }
+
+  onSubmit(): void {
+    console.log(this.hotelForm);
+    if (this.isEditing) {
+      const updatedHotel = {
+        ...this.hotelForm.value,
+        rooms: this.hotelForm.get('rooms')?.value,
+      };
+      this.hotelsService.updateHotel(updatedHotel as IHotel);
+    } else {
+      this.hotelsService.addHotel(this.hotelForm.value as IHotel);
+    }
+
+    this.router.navigate(['/management']);
   }
 }

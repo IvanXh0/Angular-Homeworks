@@ -3,3 +3,10 @@ a {
   color: #4477ce;
   font-weight: 600;
 }
+
+.btn-add {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+  margin-right: 10px;
+}

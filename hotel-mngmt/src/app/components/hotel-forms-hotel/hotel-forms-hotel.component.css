@@ -55,3 +55,10 @@ input {
   border: none;
   font-size: 1.2rem;
 }
+
+.error {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: red;
+  margin-top: 10px;
+}

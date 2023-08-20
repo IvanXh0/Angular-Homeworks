@@ -24,6 +24,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HotelFormsHotelComponent } from './components/hotel-forms-hotel/hotel-forms-hotel.component';
 import { HotelFormsRoomsComponent } from './components/hotel-forms-rooms/hotel-forms-rooms.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     ReactiveFormsModule,
     FormsModule,
     MatFormFieldModule,
+    MatInputModule,
   ],
   providers: [HotelsService],
   bootstrap: [AppComponent],

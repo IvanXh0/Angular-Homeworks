@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { IHotel } from 'src/app/inerfaces/hotel-inerface';
+import { IHotel } from 'src/app/interfaces/hotel-interface';
 import { HotelsService } from 'src/app/services/hotels.service';
 
 @Component({

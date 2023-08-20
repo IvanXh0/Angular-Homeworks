@@ -4,7 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { IHotel } from 'src/app/inerfaces/hotel-inerface';
+import { IHotel } from 'src/app/interfaces/hotel-interface';
 import { HotelsService } from 'src/app/services/hotels.service';
 
 @Component({

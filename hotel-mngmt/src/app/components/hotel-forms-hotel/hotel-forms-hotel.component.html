@@ -1,7 +1,7 @@
 <div class="container">
   <h2>{{ isEditing ? "Edit Hotel" : "Add New Hotel" }}</h2>
 
-  <form [formGroup]="hotelForm">
+  <form (ngSubmit)="onSubmit()" [formGroup]="hotelForm">
     <label for="name">Name</label>
     <mat-form-field>
       <input
@@ -11,9 +11,14 @@
         formControlName="name"
         required
       />
-      <mat-error *ngIf="hotelForm.get('name')?.hasError('required')">
-        Name is required
-      </mat-error>
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('name') && isFieldTouchedOrDirty('name')"
+      >
+        {{ isRequired("name") ? "Name is required" : "" }}
+        {{ isMinLength("name") ? "Name can't be less than 3 characters" : "" }}
+        {{ isMaxLength("name") ? "Name can't be more than 30 characters" : "" }}
+      </p>
     </mat-form-field>
 
     <label for="address">Address</label>
@@ -25,9 +30,22 @@
         formControlName="address"
         required
       />
-      <mat-error *ngIf="hotelForm.get('address')?.hasError('required')">
-        Address is required
-      </mat-error>
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('address') && isFieldTouchedOrDirty('address')"
+      >
+        {{ isRequired("address") ? "Address is required" : "" }}
+        {{
+          isMinLength("address")
+            ? "Address can't be less than 3 characters"
+            : ""
+        }}
+        {{
+          isMaxLength("address")
+            ? "Address can't be more than 30 characters"
+            : ""
+        }}
+      </p>
     </mat-form-field>
 
     <label for="city">City</label>
@@ -39,9 +57,14 @@
         formControlName="city"
         required
       />
-      <mat-error *ngIf="hotelForm.get('city')?.hasError('required')">
-        City is required
-      </mat-error>
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('city') && isFieldTouchedOrDirty('city')"
+      >
+        {{ isRequired("city") ? "City is required" : "" }}
+        {{ isMinLength("city") ? "City can't be less than 3 characters" : "" }}
+        {{ isMaxLength("city") ? "City can't be more than 20 characters" : "" }}
+      </p>
     </mat-form-field>
 
     <label for="country">Country</label>
@@ -53,9 +76,22 @@
         formControlName="country"
         required
       />
-      <mat-error *ngIf="hotelForm.get('country')?.hasError('required')">
-        Country is required
-      </mat-error>
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('country') && isFieldTouchedOrDirty('country')"
+      >
+        {{ isRequired("country") ? "Country is required" : "" }}
+        {{
+          isMinLength("country")
+            ? "Country can't be less than 3 characters"
+            : ""
+        }}
+        {{
+          isMaxLength("country")
+            ? "Country can't be more than 20 characters"
+            : ""
+        }}
+      </p>
     </mat-form-field>
 
     <label for="stars">Stars</label>
@@ -69,9 +105,14 @@
         formControlName="stars"
         required
       />
-      <mat-error *ngIf="hotelForm.get('stars')?.hasError('required')">
-        Stars is required
-      </mat-error>
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('stars') && isFieldTouchedOrDirty('stars')"
+      >
+        {{ isRequired("stars") ? "Stars is required" : "" }}
+        {{ isMin("stars") ? "Can't have less than 1 star" : "" }}
+        {{ isMax("stars") ? "Can't have more than 5 stars" : "" }}
+      </p>
     </mat-form-field>
 
     <label for="image">Image URL:</label>
@@ -83,13 +124,21 @@
         formControlName="image"
         required
       />
-      <mat-error *ngIf="hotelForm.get('image')?.hasError('required')">
-        Image URL is required
-      </mat-error>
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('image') && isFieldTouchedOrDirty('image')"
+      >
+        {{ isRequired("image") ? "Image is required" : "" }}
+      </p>
     </mat-form-field>
 
     <div class="button-container">
-      <button mat-raised-button color="primary" type="submit">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="hotelForm.invalid"
+      >
         {{ isEditing ? "Update" : "Add" }}
       </button>
       <button mat-raised-button color="accent" *ngIf="isEditing">Cancel</button>
