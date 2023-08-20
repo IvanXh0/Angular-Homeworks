@@ -1,0 +1,98 @@
+<div class="container">
+  <h2>{{ isEditing ? "Edit Hotel" : "Add New Hotel" }}</h2>
+
+  <form [formGroup]="hotelForm">
+    <label for="name">Name</label>
+    <mat-form-field>
+      <input
+        matInput
+        id="name"
+        placeholder="Name"
+        formControlName="name"
+        required
+      />
+      <mat-error *ngIf="hotelForm.get('name')?.hasError('required')">
+        Name is required
+      </mat-error>
+    </mat-form-field>
+
+    <label for="address">Address</label>
+    <mat-form-field>
+      <input
+        id="address"
+        matInput
+        placeholder="Address"
+        formControlName="address"
+        required
+      />
+      <mat-error *ngIf="hotelForm.get('address')?.hasError('required')">
+        Address is required
+      </mat-error>
+    </mat-form-field>
+
+    <label for="city">City</label>
+    <mat-form-field>
+      <input
+        matInput
+        id="city"
+        placeholder="City"
+        formControlName="city"
+        required
+      />
+      <mat-error *ngIf="hotelForm.get('city')?.hasError('required')">
+        City is required
+      </mat-error>
+    </mat-form-field>
+
+    <label for="country">Country</label>
+    <mat-form-field>
+      <input
+        id="country"
+        matInput
+        placeholder="Country"
+        formControlName="country"
+        required
+      />
+      <mat-error *ngIf="hotelForm.get('country')?.hasError('required')">
+        Country is required
+      </mat-error>
+    </mat-form-field>
+
+    <label for="stars">Stars</label>
+    <mat-form-field>
+      <input
+        id="stars"
+        name="stars"
+        matInput
+        type="number"
+        placeholder="Stars"
+        formControlName="stars"
+        required
+      />
+      <mat-error *ngIf="hotelForm.get('stars')?.hasError('required')">
+        Stars is required
+      </mat-error>
+    </mat-form-field>
+
+    <label for="image">Image URL:</label>
+    <mat-form-field>
+      <input
+        id="image"
+        matInput
+        placeholder="Image URL"
+        formControlName="image"
+        required
+      />
+      <mat-error *ngIf="hotelForm.get('image')?.hasError('required')">
+        Image URL is required
+      </mat-error>
+    </mat-form-field>
+
+    <div class="button-container">
+      <button mat-raised-button color="primary" type="submit">
+        {{ isEditing ? "Update" : "Add" }}
+      </button>
+      <button mat-raised-button color="accent" *ngIf="isEditing">Cancel</button>
+    </div>
+  </form>
+</div>

@@ -20,6 +20,10 @@ import { AvalibilityDirective } from './directives/avalibility-directive';
 import { HomeComponent } from './components/home/home.component';
 import { HotelsService } from './services/hotels.service';
 import { NotFoundComponent } from './components/not-found/not-found.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HotelFormsHotelComponent } from './components/hotel-forms-hotel/hotel-forms-hotel.component';
+import { HotelFormsRoomsComponent } from './components/hotel-forms-rooms/hotel-forms-rooms.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @NgModule({
   declarations: [
@@ -30,6 +34,8 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
     AvalibilityDirective,
     HomeComponent,
     NotFoundComponent,
+    HotelFormsHotelComponent,
+    HotelFormsRoomsComponent,
   ],
   imports: [
     BrowserModule,
@@ -44,6 +50,9 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
     MatCardModule,
     MatDividerModule,
     MatListModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatFormFieldModule,
   ],
   providers: [HotelsService],
   bootstrap: [AppComponent],

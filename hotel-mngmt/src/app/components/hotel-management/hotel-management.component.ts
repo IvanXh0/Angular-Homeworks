@@ -3,6 +3,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Title } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import { IHotel } from 'src/app/inerfaces/hotel-inerface';
 import { HotelsService } from 'src/app/services/hotels.service';
 
@@ -14,12 +15,13 @@ import { HotelsService } from 'src/app/services/hotels.service';
 export class HotelManagementComponent implements AfterViewInit, OnInit {
   hotels: IHotel[] = [];
 
-  displayedColumns: string[] = ['name', 'stars', 'address', 'rooms'];
+  displayedColumns: string[] = ['name', 'stars', 'address', 'rooms', 'actions'];
   dataSource: MatTableDataSource<IHotel>;
 
   constructor(
     private titleService: Title,
-    private hotelsService: HotelsService
+    private hotelsService: HotelsService,
+    private router: Router
   ) {
     this.dataSource = new MatTableDataSource();
     this.titleService.setTitle('Hotel | Management');
@@ -40,5 +42,9 @@ export class HotelManagementComponent implements AfterViewInit, OnInit {
 
   getHotels(): IHotel[] {
     return (this.hotels = this.hotelsService.getHotels());
+  }
+
+  onEdit(hotelId: number): void {
+    this.router.navigate(['/hotel-editor', hotelId]);
   }
 }

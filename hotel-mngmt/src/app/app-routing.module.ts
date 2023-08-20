@@ -4,6 +4,8 @@ import { HotelManagementComponent } from './components/hotel-management/hotel-ma
 import { HotelDetailsComponent } from './components/hotel-details/hotel-details.component';
 import { HomeComponent } from './components/home/home.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
+import { HotelFormsHotelComponent } from './components/hotel-forms-hotel/hotel-forms-hotel.component';
+import { HotelFormsRoomsComponent } from './components/hotel-forms-rooms/hotel-forms-rooms.component';
 
 const routes: Routes = [
   {
@@ -17,6 +19,22 @@ const routes: Routes = [
   {
     path: 'details/:id',
     component: HotelDetailsComponent,
+  },
+  {
+    path: 'hotel-editor',
+    component: HotelFormsHotelComponent,
+  },
+  {
+    path: 'hotel-editor/:id',
+    component: HotelFormsHotelComponent,
+  },
+  {
+    path: 'room-editor',
+    component: HotelFormsRoomsComponent,
+  },
+  {
+    path: 'room-editor/:id',
+    component: HotelFormsRoomsComponent,
   },
   {
     path: '**',
