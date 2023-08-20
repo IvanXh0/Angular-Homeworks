@@ -18,6 +18,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { AvalibilityDirective } from './directives/avalibility-directive';
 import { HomeComponent } from './components/home/home.component';
+import { HotelsService } from './services/hotels.service';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +29,7 @@ import { HomeComponent } from './components/home/home.component';
     NavbarComponent,
     AvalibilityDirective,
     HomeComponent,
+    NotFoundComponent,
   ],
   imports: [
     BrowserModule,
@@ -42,7 +45,7 @@ import { HomeComponent } from './components/home/home.component';
     MatDividerModule,
     MatListModule,
   ],
-  providers: [],
+  providers: [HotelsService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

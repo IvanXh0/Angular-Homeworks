@@ -1,5 +1,5 @@
 <div class="container">
-  <mat-card class="hotel-card" *ngIf="selectedHotel">
+  <mat-card class="hotel-card" *ngIf="selectedHotel; else notFound">
     <img
       mat-card-image
       [src]="selectedHotel.image"
@@ -36,3 +36,7 @@
     </div>
   </div>
 </div>
+
+<ng-template #notFound>
+  <app-not-found></app-not-found>
+</ng-template>
