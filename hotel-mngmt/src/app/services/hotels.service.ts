@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IHotel } from '../interfaces/hotel-interface';
+import { IRoom } from '../interfaces/room-interface';
 
 @Injectable({
   providedIn: 'root',
@@ -300,16 +301,27 @@ export class HotelsService {
   ];
 
   getHotels(): IHotel[] {
-    this.generateRandomImage();
     return this.hotels;
   }
 
   getHotelById(id: number): IHotel | undefined {
+    this.generateRandomImage();
     return this.hotels.find((hotel) => hotel.id === id);
   }
 
   addHotel(hotel: IHotel): void {
     this.hotels.push(hotel);
+  }
+
+  getRoomById(hotelId: number, roomId: number): IRoom | undefined {
+    const hotel = this.hotels.find((hotel) => hotel.id === hotelId);
+
+    if (hotel) {
+      const room = hotel.rooms.find((room) => room.id === roomId);
+      return room;
+    }
+
+    return undefined;
   }
 
   updateHotel(hotel: IHotel): void {
@@ -318,6 +330,21 @@ export class HotelsService {
       ...this.hotels[index],
       ...hotel,
     };
+  }
+
+  updateRoom(hotelId: number, room: IRoom): void {
+    const index = this.hotels.findIndex((h) => h.id === hotelId);
+    const hotel = this.hotels[index];
+    const roomIndex = hotel.rooms.findIndex((r) => r.id === room.id);
+    hotel.rooms[roomIndex] = {
+      ...hotel.rooms[roomIndex],
+      ...room,
+    };
+  }
+
+  addRoom(hotelId: number, room: IRoom): void {
+    const hotel = this.hotels.find((h) => h.id === hotelId);
+    hotel?.rooms.push(room);
   }
 
   generateRandomImage() {

@@ -128,7 +128,6 @@ export class HotelFormsHotelComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    console.log(this.hotelForm);
     if (this.isEditing) {
       const updatedHotel = {
         ...this.hotelForm.value,

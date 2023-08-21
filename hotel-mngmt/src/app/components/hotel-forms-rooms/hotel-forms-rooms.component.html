@@ -1,1 +1,94 @@
-<p>hotel-forms-rooms works!</p>
+<div class="container">
+  <h2>{{ isEditing ? "Edit Room" : "Add New Room" }}</h2>
+
+  <form [formGroup]="roomForm" (ngSubmit)="onSubmit()">
+    <label for="name">Name</label>
+    <mat-form-field>
+      <input matInput id="name" placeholder="Name" formControlName="name" />
+    </mat-form-field>
+
+    <label for="description">Description</label>
+    <mat-form-field>
+      <input
+        matInput
+        id="description"
+        placeholder="Description"
+        formControlName="description"
+      />
+    </mat-form-field>
+
+    <label for="image">Image URL</label>
+    <mat-form-field>
+      <input
+        matInput
+        id="image"
+        placeholder="Image URL"
+        formControlName="image"
+      />
+    </mat-form-field>
+
+    <label for="price">Price</label>
+    <mat-form-field>
+      <input
+        matInput
+        id="price"
+        type="number"
+        placeholder="Price"
+        formControlName="price"
+      />
+    </mat-form-field>
+
+    <label for="persons">Max Persons</label>
+    <mat-form-field>
+      <input
+        matInput
+        id="persons"
+        type="number"
+        placeholder="Max Persons"
+        formControlName="persons"
+      />
+    </mat-form-field>
+
+    <label for="children">Max Children</label>
+    <mat-form-field>
+      <input
+        matInput
+        id="children"
+        type="number"
+        placeholder="Max Children"
+        formControlName="children"
+      />
+    </mat-form-field>
+
+    <label for="amenities">Amenities</label>
+    <mat-form-field>
+      <input
+        matInput
+        id="amenities"
+        placeholder="Amenities"
+        formControlName="amenities"
+      />
+    </mat-form-field>
+
+    <mat-checkbox
+      matCheckbox
+      name="isAvailable"
+      id="isAvailable"
+      formControlName="isAvailable"
+    >
+      Is Available
+    </mat-checkbox>
+
+    <div class="button-container">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="roomForm.invalid"
+      >
+        {{ isEditing ? "Update" : "Add" }}
+      </button>
+      <button mat-raised-button color="accent" *ngIf="isEditing">Cancel</button>
+    </div>
+  </form>
+</div>

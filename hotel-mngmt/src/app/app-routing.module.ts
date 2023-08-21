@@ -29,11 +29,11 @@ const routes: Routes = [
     component: HotelFormsHotelComponent,
   },
   {
-    path: 'room-editor',
+    path: 'room-editor/:hotelId/rooms',
     component: HotelFormsRoomsComponent,
   },
   {
-    path: 'room-editor/:id',
+    path: 'room-editor/:hotelId/:roomId',
     component: HotelFormsRoomsComponent,
   },
   {

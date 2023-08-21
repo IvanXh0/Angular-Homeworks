@@ -12,13 +12,20 @@
         {{ selectedHotel.country }}
       </p>
       <p>Stars: {{ selectedHotel.stars }}</p>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="onAddRoom(selectedHotel.id)"
+      >
+        Add Room
+      </button>
     </mat-card-content>
   </mat-card>
 
   <mat-divider class="divider"></mat-divider>
 
   <h3>Rooms:</h3>
-  <div>
+  <div class="room-container">
     <div class="room-card" *ngFor="let room of selectedHotel?.rooms">
       <img mat-list-avatar [src]="room.image" [alt]="room.name" />
       <h3 mat-line>{{ room.name }}</h3>
@@ -27,11 +34,20 @@
       <p mat-line>Max Persons: {{ room.persons }}</p>
       <p mat-line>Max Children: {{ room.children }}</p>
       <p mat-line>Amenities: {{ room.amenities.join(", ") }}</p>
-      <p mat-line appAvalibility [isAvailable]="room.isAvailable">
+      <p appAvalibility [isAvailable]="room.isAvailable">
         Availibility: {{ room.isAvailable ? "Available" : "Unavailable" }}
       </p>
       <button mat-raised-button color="primary" [disabled]="!room.isAvailable">
         Book Now
+      </button>
+      <button
+        class="btn-edit"
+        mat-raised-button
+        color="warn"
+        *ngIf="selectedHotel && room"
+        (click)="onEdit(selectedHotel.id, room.id)"
+      >
+        Edit Room
       </button>
     </div>
   </div>

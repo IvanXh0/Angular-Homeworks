@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { IHotel } from 'src/app/interfaces/hotel-interface';
 import { HotelsService } from 'src/app/services/hotels.service';
@@ -18,7 +18,8 @@ export class HotelDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private titleService: Title,
-    private hotelsService: HotelsService
+    private hotelsService: HotelsService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -31,5 +32,17 @@ export class HotelDetailsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.paramMapSubscription?.unsubscribe();
+  }
+
+  onEdit(hotelId: number, roomId: number): void {
+    if (this.selectedHotel) {
+      this.router.navigate(['/room-editor', hotelId, roomId]);
+    }
+  }
+
+  onAddRoom(hotelId: number): void {
+    if (this.selectedHotel) {
+      this.router.navigate(['/room-editor', hotelId, 'rooms']);
+    }
   }
 }

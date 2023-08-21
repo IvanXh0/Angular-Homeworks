@@ -25,6 +25,7 @@ import { HotelFormsHotelComponent } from './components/hotel-forms-hotel/hotel-f
 import { HotelFormsRoomsComponent } from './components/hotel-forms-rooms/hotel-forms-rooms.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { MatInputModule } from '@angular/material/input';
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatCheckboxModule,
   ],
   providers: [HotelsService],
   bootstrap: [AppComponent],
