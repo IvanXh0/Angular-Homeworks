@@ -12,6 +12,7 @@ import { HotelsService } from 'src/app/services/hotels.service';
 })
 export class HotelDetailsComponent implements OnInit, OnDestroy {
   selectedHotel: IHotel | undefined;
+  updatedAmenities: string[] = [];
 
   private paramMapSubscription: Subscription | undefined;
 
@@ -28,6 +29,10 @@ export class HotelDetailsComponent implements OnInit, OnDestroy {
       this.selectedHotel = this.hotelsService.getHotelById(id);
       this.titleService.setTitle(`Hotel | ${this.selectedHotel?.name}`);
     });
+  }
+
+  handleAmenitiesUpdated(updatedAmenities: string[]): void {
+    this.updatedAmenities = updatedAmenities;
   }
 
   ngOnDestroy(): void {

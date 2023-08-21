@@ -89,16 +89,22 @@ export class HotelFormsRoomsComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     if (this.isEditing) {
+      // const updatedRoom = this.roomForm.value as IRoom;
+      // updatedRoom.amenities = (updatedRoom.amenities as unknown as string)
+      //   .split(',')
+      //   .map((a) => a.trim());
+
       const updatedRoom = this.roomForm.value as IRoom;
-      updatedRoom.amenities = (updatedRoom.amenities as unknown as string)
-        .split(', ')
-        .map((a) => a.trim());
+      updatedRoom.amenities = Array.isArray(updatedRoom.amenities)
+        ? updatedRoom.amenities
+        : [updatedRoom.amenities];
+
       this.hotelsService.updateRoom(this.hotelId!, updatedRoom);
     } else {
       const newRoom = this.roomForm.value as IRoom;
-      newRoom.amenities = (newRoom.amenities as unknown as string)
-        .split(', ')
-        .map((a) => a.trim());
+      newRoom.amenities = Array.isArray(newRoom.amenities)
+        ? newRoom.amenities
+        : [newRoom.amenities];
       this.hotelsService.addRoom(this.hotelId!, newRoom);
     }
     this.location.back();
