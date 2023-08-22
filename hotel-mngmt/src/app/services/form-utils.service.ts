@@ -33,4 +33,8 @@ export class FormUtilsService {
   isMax(control: AbstractControl | null): boolean {
     return control ? control.hasError('max') : false;
   }
+
+  isNotUrl(control: AbstractControl | null): boolean {
+    return control ? control.hasError('pattern') : false;
+  }
 }

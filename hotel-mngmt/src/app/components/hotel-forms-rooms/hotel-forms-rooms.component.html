@@ -61,6 +61,7 @@
             ? "Image URL can't be less than 3 characters"
             : ""
         }}
+        {{ isNotUrl("image") ? "Image URL is not valid" : "" }}
       </p>
     </mat-form-field>
 

@@ -34,7 +34,11 @@ export class HotelFormsRoomsComponent implements OnInit, OnDestroy {
     ),
     image: new FormControl<string>(
       '',
-      Validators.compose([Validators.required, Validators.minLength(3)])
+      Validators.compose([
+        Validators.required,
+        Validators.minLength(3),
+        Validators.pattern(/^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/),
+      ])
     ),
     price: new FormControl<number>(
       0,
@@ -79,6 +83,11 @@ export class HotelFormsRoomsComponent implements OnInit, OnDestroy {
   isRequired(fieldName: string): boolean {
     const control = this.roomForm.get(fieldName);
     return this.formUtils.isRequired(control);
+  }
+
+  isNotUrl(fieldName: string): boolean {
+    const control = this.roomForm.get(fieldName);
+    return this.formUtils.isNotUrl(control);
   }
 
   isMinLength(fieldName: string): boolean {
