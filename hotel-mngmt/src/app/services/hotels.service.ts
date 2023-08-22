@@ -318,7 +318,12 @@ export class HotelsService {
 
     if (hotel) {
       const room = hotel.rooms.find((room) => room.id === roomId);
-      return room;
+
+      if (room) {
+        return room;
+      } else {
+        return undefined;
+      }
     }
 
     return undefined;

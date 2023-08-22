@@ -116,9 +116,9 @@ export class HotelFormsHotelComponent implements OnInit, OnDestroy {
     this.paramMapSubscription = this.route.paramMap.subscribe((params) => {
       let id = +params.get('id')!;
 
+      const hotel = this.hotelsService.getHotelById(id);
       if (id) {
         this.isEditing = true;
-        const hotel = this.hotelsService.getHotelById(id);
 
         this.titleService.setTitle(`Edit Hotel | ${hotel?.name}`);
 
@@ -127,6 +127,11 @@ export class HotelFormsHotelComponent implements OnInit, OnDestroy {
         }
       } else {
         this.titleService.setTitle(`Add Hotel`);
+      }
+
+      if (!hotel && this.isEditing) {
+        this.titleService.setTitle(`Hotel | Not Found`);
+        this.router.navigate(['/not-found']);
       }
     });
   }

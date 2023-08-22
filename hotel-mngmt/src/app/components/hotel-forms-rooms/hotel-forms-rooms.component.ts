@@ -56,6 +56,7 @@ export class HotelFormsRoomsComponent implements OnInit, OnDestroy {
 
   isEditing: boolean = false;
   hotelId: number | undefined;
+  shouldRedirect: boolean = false;
 
   constructor(
     private hotelsService: HotelsService,
@@ -100,6 +101,9 @@ export class HotelFormsRoomsComponent implements OnInit, OnDestroy {
       let hotelId = +params.get('hotelId')!;
       let roomId = +params.get('roomId')!;
 
+      const room = this.hotelsService.getRoomById(hotelId, roomId);
+      const hotel = this.hotelsService.getHotelById(hotelId);
+
       if (hotelId && roomId) {
         const roomName = this.hotelsService.getRoomById(hotelId, roomId)?.name;
         this.titleService.setTitle(`Edit Room | ${roomName}`);
@@ -107,7 +111,6 @@ export class HotelFormsRoomsComponent implements OnInit, OnDestroy {
         this.hotelId = hotelId;
         this.isEditing = true;
 
-        const room = this.hotelsService.getRoomById(hotelId, roomId);
         room?.amenities.join(', ');
         this.roomForm.patchValue(room as IRoom);
       }
@@ -118,6 +121,18 @@ export class HotelFormsRoomsComponent implements OnInit, OnDestroy {
 
         const hotelName = this.hotelsService.getHotelById(hotelId)?.name;
         this.titleService.setTitle(`Add Room | ${hotelName}`);
+      }
+
+      if (!room && this.isEditing) {
+        this.titleService.setTitle(`Room | Not Found`);
+        this.shouldRedirect = true;
+        return;
+      }
+
+      if (!hotel && !this.isEditing) {
+        this.titleService.setTitle(`Hotel | Not Found`);
+        this.shouldRedirect = true;
+        return;
       }
     });
   }
