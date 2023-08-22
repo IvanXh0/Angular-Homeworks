@@ -5,6 +5,14 @@
     <label for="name">Name</label>
     <mat-form-field>
       <input matInput id="name" placeholder="Name" formControlName="name" />
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('name') && isFieldTouchedOrDirty('name')"
+      >
+        {{ isRequired("name") ? "Name is required" : "" }}
+        {{ isMinLength("name") ? "Name can't be less than 3 characters" : "" }}
+        {{ isMaxLength("name") ? "Name can't be more than 30 characters" : "" }}
+      </p>
     </mat-form-field>
 
     <label for="description">Description</label>
@@ -15,6 +23,24 @@
         placeholder="Description"
         formControlName="description"
       />
+      <p
+        class="error"
+        *ngIf="
+          isFieldInvalid('description') && isFieldTouchedOrDirty('description')
+        "
+      >
+        {{ isRequired("description") ? "Description is required" : "" }}
+        {{
+          isMinLength("description")
+            ? "Description can't be less than 3 characters"
+            : ""
+        }}
+        {{
+          isMaxLength("description")
+            ? "Description can't be more than 200 characters"
+            : ""
+        }}
+      </p>
     </mat-form-field>
 
     <label for="image">Image URL</label>
@@ -25,6 +51,17 @@
         placeholder="Image URL"
         formControlName="image"
       />
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('image') && isFieldTouchedOrDirty('image')"
+      >
+        {{ isRequired("image") ? "Image is required" : "" }}
+        {{
+          isMinLength("image")
+            ? "Image URL can't be less than 3 characters"
+            : ""
+        }}
+      </p>
     </mat-form-field>
 
     <label for="price">Price</label>
@@ -36,6 +73,13 @@
         placeholder="Price"
         formControlName="price"
       />
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('price') && isFieldTouchedOrDirty('price')"
+      >
+        {{ isRequired("price") ? "Price is required" : "" }}
+        {{ isMin("price") ? "Price can't be lower than 1" : "" }}
+      </p>
     </mat-form-field>
 
     <label for="persons">Max Persons</label>
@@ -47,6 +91,13 @@
         placeholder="Max Persons"
         formControlName="persons"
       />
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('persons') && isFieldTouchedOrDirty('persons')"
+      >
+        {{ isRequired("persons") ? "Persons is required" : "" }}
+        {{ isMin("persons") ? "Persons can't be lower than 1" : "" }}
+      </p>
     </mat-form-field>
 
     <label for="children">Max Children</label>
@@ -58,6 +109,13 @@
         placeholder="Max Children"
         formControlName="children"
       />
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('children') && isFieldTouchedOrDirty('children')"
+      >
+        {{ isRequired("children") ? "Children is required" : "" }}
+        {{ isMin("children") ? "Children can't be lower than 0" : "" }}
+      </p>
     </mat-form-field>
 
     <label for="amenities">Amenities</label>
@@ -68,6 +126,14 @@
         placeholder="Amenities"
         formControlName="amenities"
       />
+      <p
+        class="error"
+        *ngIf="
+          isFieldInvalid('amenities') && isFieldTouchedOrDirty('amenities')
+        "
+      >
+        {{ isRequired("amenities") ? "Amenities is required" : "" }}
+      </p>
     </mat-form-field>
 
     <mat-checkbox
@@ -88,7 +154,9 @@
       >
         {{ isEditing ? "Update" : "Add" }}
       </button>
-      <button mat-raised-button color="accent" *ngIf="isEditing">Cancel</button>
+      <button mat-raised-button color="accent" (click)="onCancel($event)">
+        Cancel
+      </button>
     </div>
   </form>
 </div>

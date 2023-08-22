@@ -141,7 +141,9 @@
       >
         {{ isEditing ? "Update" : "Add" }}
       </button>
-      <button mat-raised-button color="accent" *ngIf="isEditing">Cancel</button>
+      <button mat-raised-button color="accent" (click)="onCancel($event)">
+        Cancel
+      </button>
     </div>
   </form>
 </div>

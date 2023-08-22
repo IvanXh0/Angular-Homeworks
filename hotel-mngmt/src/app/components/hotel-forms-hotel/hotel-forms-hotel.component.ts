@@ -6,6 +6,8 @@ import { IRoom } from '../../interfaces/room-interface';
 import { HotelsService } from 'src/app/services/hotels.service';
 import { IHotel } from 'src/app/interfaces/hotel-interface';
 import { FormUtilsService } from 'src/app/services/form-utils.service';
+import { Location } from '@angular/common';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-hotel-forms-hotel',
@@ -70,7 +72,9 @@ export class HotelFormsHotelComponent implements OnInit, OnDestroy {
     private hotelsService: HotelsService,
     private router: Router,
     private route: ActivatedRoute,
-    private formUtils: FormUtilsService
+    private formUtils: FormUtilsService,
+    private location: Location,
+    private titleService: Title
   ) {}
 
   isFieldInvalid(fieldName: string): boolean {
@@ -116,9 +120,13 @@ export class HotelFormsHotelComponent implements OnInit, OnDestroy {
         this.isEditing = true;
         const hotel = this.hotelsService.getHotelById(id);
 
+        this.titleService.setTitle(`Edit Hotel | ${hotel?.name}`);
+
         if (hotel) {
           this.hotelForm.patchValue(hotel);
         }
+      } else {
+        this.titleService.setTitle(`Add Hotel`);
       }
     });
   }
@@ -139,5 +147,10 @@ export class HotelFormsHotelComponent implements OnInit, OnDestroy {
     }
 
     this.router.navigate(['/management']);
+  }
+
+  onCancel(e: Event): void {
+    e.preventDefault();
+    this.location.back();
   }
 }

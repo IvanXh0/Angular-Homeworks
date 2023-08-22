@@ -1,9 +1,11 @@
 import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { IRoom } from 'src/app/interfaces/room-interface';
+import { FormUtilsService } from 'src/app/services/form-utils.service';
 import { HotelsService } from 'src/app/services/hotels.service';
 
 @Component({
@@ -50,18 +52,48 @@ export class HotelFormsRoomsComponent implements OnInit, OnDestroy {
     isAvailable: new FormControl<boolean>(true, Validators.required),
   });
 
-  hotelId: number | undefined;
-
   private paramMapSubscription: Subscription | undefined;
 
   isEditing: boolean = false;
+  hotelId: number | undefined;
 
   constructor(
     private hotelsService: HotelsService,
-    private router: Router,
     private route: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private formUtils: FormUtilsService,
+    private titleService: Title
   ) {}
+
+  isFieldInvalid(fieldName: string): boolean {
+    const control = this.roomForm.get(fieldName);
+    return this.formUtils.isFieldInvalid(control);
+  }
+
+  isFieldTouchedOrDirty(fieldName: string): boolean {
+    const control = this.roomForm.get(fieldName);
+    return this.formUtils.isFieldTouchedOrDirty(control);
+  }
+
+  isRequired(fieldName: string): boolean {
+    const control = this.roomForm.get(fieldName);
+    return this.formUtils.isRequired(control);
+  }
+
+  isMinLength(fieldName: string): boolean {
+    const control = this.roomForm.get(fieldName);
+    return this.formUtils.isMinLength(control);
+  }
+
+  isMaxLength(fieldName: string): boolean {
+    const control = this.roomForm.get(fieldName);
+    return this.formUtils.isMaxLength(control);
+  }
+
+  isMin(fieldName: string): boolean {
+    const control = this.roomForm.get(fieldName);
+    return this.formUtils.isMin(control);
+  }
 
   ngOnInit(): void {
     this.paramMapSubscription = this.route.paramMap.subscribe((params) => {
@@ -69,8 +101,12 @@ export class HotelFormsRoomsComponent implements OnInit, OnDestroy {
       let roomId = +params.get('roomId')!;
 
       if (hotelId && roomId) {
+        const roomName = this.hotelsService.getRoomById(hotelId, roomId)?.name;
+        this.titleService.setTitle(`Edit Room | ${roomName}`);
+
         this.hotelId = hotelId;
         this.isEditing = true;
+
         const room = this.hotelsService.getRoomById(hotelId, roomId);
         room?.amenities.join(', ');
         this.roomForm.patchValue(room as IRoom);
@@ -79,6 +115,9 @@ export class HotelFormsRoomsComponent implements OnInit, OnDestroy {
       if (hotelId && !roomId) {
         this.hotelId = hotelId;
         this.isEditing = false;
+
+        const hotelName = this.hotelsService.getHotelById(hotelId)?.name;
+        this.titleService.setTitle(`Add Room | ${hotelName}`);
       }
     });
   }
@@ -107,6 +146,11 @@ export class HotelFormsRoomsComponent implements OnInit, OnDestroy {
         : [newRoom.amenities];
       this.hotelsService.addRoom(this.hotelId!, newRoom);
     }
+    this.location.back();
+  }
+
+  onCancel(e: Event): void {
+    e.preventDefault();
     this.location.back();
   }
 }
