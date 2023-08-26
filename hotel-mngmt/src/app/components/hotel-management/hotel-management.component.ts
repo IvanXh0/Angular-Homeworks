@@ -1,38 +1,61 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Observable, Subscription, tap } from 'rxjs';
 import { IHotel } from 'src/app/interfaces/hotel-interface';
-import { HotelsService } from 'src/app/services/hotels.service';
+import { HotelsState } from 'src/app/interfaces/hotel-state.interface';
+import { getHotels } from 'src/app/store/hotels.actions';
+import { hotelsSelector } from 'src/app/store/hotels.selectors';
 
 @Component({
   selector: 'app-hotel-management',
   templateUrl: './hotel-management.component.html',
   styleUrls: ['./hotel-management.component.css'],
 })
-export class HotelManagementComponent implements AfterViewInit, OnInit {
-  hotels: IHotel[] = [];
+export class HotelManagementComponent
+  implements AfterViewInit, OnInit, OnDestroy
+{
+  hotels$: Observable<IHotel[]> = new Observable<IHotel[]>();
+
+  subscription: Subscription = new Subscription();
 
   displayedColumns: string[] = ['name', 'stars', 'address', 'rooms', 'actions'];
   dataSource: MatTableDataSource<IHotel>;
 
   constructor(
     private titleService: Title,
-    private hotelsService: HotelsService,
+    private store: Store<HotelsState>,
     private router: Router
   ) {
-    this.dataSource = new MatTableDataSource();
     this.titleService.setTitle('Hotel | Management');
+    this.dataSource = new MatTableDataSource();
   }
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit(): void {
-    this.getHotels();
-    this.dataSource.data = this.hotels;
+    this.hotels$ = this.store.select(hotelsSelector);
+
+    this.subscription = this.hotels$
+      .pipe(
+        tap((hotels) => {
+          this.dataSource.data = hotels;
+        })
+      )
+      .subscribe();
+
+    this.store.dispatch(getHotels());
   }
 
   ngAfterViewInit(): void {
@@ -40,11 +63,11 @@ export class HotelManagementComponent implements AfterViewInit, OnInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  getHotels(): IHotel[] {
-    return (this.hotels = this.hotelsService.getHotels());
-  }
-
   onEdit(hotelId: number): void {
     this.router.navigate(['/hotel-editor', hotelId]);
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ɵIS_HYDRATION_DOM_REUSE_ENABLED } from '@angular/core';
 import { IHotel } from '../interfaces/hotel-interface';
 import { IRoom } from '../interfaces/room-interface';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -8,7 +9,7 @@ import { IRoom } from '../interfaces/room-interface';
 export class HotelsService {
   constructor() {}
 
-  private hotels: IHotel[] = [
+  private hotelsDefaultData: IHotel[] = [
     {
       id: 1,
       name: 'Luxury Resort',
@@ -300,64 +301,116 @@ export class HotelsService {
     },
   ];
 
-  getHotels(): IHotel[] {
-    return this.hotels;
+  private hotelData: BehaviorSubject<IHotel[]> = new BehaviorSubject<IHotel[]>(
+    this.hotelsDefaultData
+  );
+
+  hotels$: Observable<IHotel[]> = this.hotelData.asObservable();
+
+  private updateHotelData(hotels: IHotel[]): void {
+    this.hotelData.next(hotels);
+  }
+
+  getHotels(): Observable<IHotel[]> {
+    // this.generateRandomImage();
+    return this.hotels$;
+    // return this.hotels;
   }
 
   getHotelById(id: number): IHotel | undefined {
-    this.generateRandomImage();
-    return this.hotels.find((hotel) => hotel.id === id);
+    const hotels = this.hotelData.getValue();
+    return hotels.find((hotel) => hotel.id === id);
   }
 
   addHotel(hotel: IHotel): void {
-    this.hotels.push(hotel);
+    // this.hotels.push(hotel);
+
+    const hotels = this.hotelData.getValue();
+    hotels.push(hotel);
+    this.updateHotelData(hotels);
   }
 
   getRoomById(hotelId: number, roomId: number): IRoom | undefined {
-    const hotel = this.hotels.find((hotel) => hotel.id === hotelId);
+    // const hotel = this.hotels.find((hotel) => hotel.id === hotelId);
 
-    if (hotel) {
-      const room = hotel.rooms.find((room) => room.id === roomId);
+    // if (hotel) {
+    //   const room = hotel.rooms.find((room) => room.id === roomId);
 
-      if (room) {
-        return room;
-      } else {
-        return undefined;
-      }
+    //   if (room) {
+    //     return room;
+    //   } else {
+    //     return undefined;
+    //   }
+    // }
+
+    const hotels = this.hotelData.getValue();
+
+    const findHotel = hotels.find((hotel) => hotel.id === hotelId);
+
+    if (findHotel) {
+      const room = findHotel.rooms.find((room) => room.id === roomId);
+      return room;
     }
 
     return undefined;
   }
 
   updateHotel(hotel: IHotel): void {
-    const index = this.hotels.findIndex((h) => h.id === hotel.id);
-    this.hotels[index] = {
-      ...this.hotels[index],
+    const hotels = this.hotelData.getValue();
+    const index = hotels.findIndex((h) => h.id === hotel.id);
+    hotels[index] = {
+      ...hotels[index],
       ...hotel,
     };
+
+    this.updateHotelData(hotels);
   }
 
   updateRoom(hotelId: number, room: IRoom): void {
-    const index = this.hotels.findIndex((h) => h.id === hotelId);
-    const hotel = this.hotels[index];
+    // const index = this.hotels.findIndex((h) => h.id === hotelId);
+    // const hotel = this.hotels[index];
+    // const roomIndex = hotel.rooms.findIndex((r) => r.id === room.id);
+    // hotel.rooms[roomIndex] = {
+    //   ...hotel.rooms[roomIndex],
+    //   ...room,
+    // };
+
+    const hotels = this.hotelData.getValue();
+    const hotelIndex = hotels.findIndex((h) => h.id === hotelId);
+    const hotel = hotels[hotelIndex];
+
     const roomIndex = hotel.rooms.findIndex((r) => r.id === room.id);
     hotel.rooms[roomIndex] = {
       ...hotel.rooms[roomIndex],
       ...room,
     };
+
+    this.updateHotelData(hotels);
   }
 
   addRoom(hotelId: number, room: IRoom): void {
-    const hotel = this.hotels.find((h) => h.id === hotelId);
+    const hotels = this.hotelData.getValue();
+    const hotel = hotels.find((h) => h.id === hotelId);
     hotel?.rooms.push(room);
+
+    this.updateHotelData(hotels);
   }
 
   generateRandomImage() {
-    this.hotels.map((hotel) => {
-      hotel.image = `https://source.unsplash.com/random/?hotel-resort`;
-      hotel.rooms.forEach((room) => {
-        room.image = `https://source.unsplash.com/random/?hotel-room`;
+    const hotels = this.hotelsDefaultData.map((hotel) => {
+      const updatedRooms = hotel.rooms.map((room) => {
+        return {
+          ...room,
+          image: 'https://source.unsplash.com/random/?hotel-room',
+        };
       });
+
+      return {
+        ...hotel,
+        rooms: updatedRooms,
+      };
     });
+
+    this.updateHotelData(hotels);
   }
 }

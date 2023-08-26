@@ -3,10 +3,25 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
+import {
+  Subscription,
+  combineLatest,
+  forkJoin,
+  map,
+  mergeMap,
+  of,
+  pipe,
+  switchMap,
+  tap,
+} from 'rxjs';
+import { IHotel } from 'src/app/interfaces/hotel-interface';
+import { HotelsState } from 'src/app/interfaces/hotel-state.interface';
 import { IRoom } from 'src/app/interfaces/room-interface';
 import { FormUtilsService } from 'src/app/services/form-utils.service';
 import { HotelsService } from 'src/app/services/hotels.service';
+import { addRoom, updateRoom } from 'src/app/store/hotels.actions';
+import { hotelsSelector } from 'src/app/store/hotels.selectors';
 
 @Component({
   selector: 'app-hotel-forms-rooms',
@@ -56,7 +71,7 @@ export class HotelFormsRoomsComponent implements OnInit, OnDestroy {
     isAvailable: new FormControl<boolean>(true, Validators.required),
   });
 
-  private paramMapSubscription: Subscription | undefined;
+  subscription: Subscription = new Subscription();
 
   isEditing: boolean = false;
   hotelId: number | undefined;
@@ -67,7 +82,8 @@ export class HotelFormsRoomsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private location: Location,
     private formUtils: FormUtilsService,
-    private titleService: Title
+    private titleService: Title,
+    private store: Store<HotelsState>
   ) {}
 
   isFieldInvalid(fieldName: string): boolean {
@@ -106,69 +122,70 @@ export class HotelFormsRoomsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.paramMapSubscription = this.route.paramMap.subscribe((params) => {
-      let hotelId = +params.get('hotelId')!;
-      let roomId = +params.get('roomId')!;
+    this.subscription = this.route.paramMap
+      .pipe(
+        map((params) => {
+          const hotelId = +params.get('hotelId')!;
+          const roomId = +params.get('roomId')!;
 
-      const room = this.hotelsService.getRoomById(hotelId, roomId);
-      const hotel = this.hotelsService.getHotelById(hotelId);
+          return [hotelId, roomId];
+        })
+      )
+      .subscribe(([hotelId, roomId]) => {
+        const room = this.hotelsService.getRoomById(hotelId, roomId);
+        const hotel = this.hotelsService.getHotelById(hotelId);
 
-      if (hotelId && roomId) {
-        const roomName = this.hotelsService.getRoomById(hotelId, roomId)?.name;
-        this.titleService.setTitle(`Edit Room | ${roomName}`);
+        if (hotelId && roomId) {
+          this.isEditing = true;
+          this.hotelId = hotelId;
 
-        this.hotelId = hotelId;
-        this.isEditing = true;
+          this.titleService.setTitle(`Edit Room | ${room?.name}`);
+          room?.amenities.join(', ');
 
-        room?.amenities.join(', ');
-        this.roomForm.patchValue(room as IRoom);
-      }
+          this.roomForm.patchValue(room as IRoom);
+        }
 
-      if (hotelId && !roomId) {
-        this.hotelId = hotelId;
-        this.isEditing = false;
+        if (hotelId && !roomId) {
+          this.isEditing = false;
+          this.hotelId = hotelId;
 
-        const hotelName = this.hotelsService.getHotelById(hotelId)?.name;
-        this.titleService.setTitle(`Add Room | ${hotelName}`);
-      }
+          this.titleService.setTitle(`Add Room | ${hotel?.name}`);
+        }
 
-      if (!room && this.isEditing) {
-        this.titleService.setTitle(`Room | Not Found`);
-        this.shouldRedirect = true;
-        return;
-      }
+        if (!room && this.isEditing) {
+          this.titleService.setTitle(`Room | Not Found`);
+          this.shouldRedirect = true;
+          return;
+        }
 
-      if (!hotel && !this.isEditing) {
-        this.titleService.setTitle(`Hotel | Not Found`);
-        this.shouldRedirect = true;
-        return;
-      }
-    });
+        if (!hotel && !this.isEditing) {
+          this.titleService.setTitle(`Hotel | Not Found`);
+          this.shouldRedirect = true;
+          return;
+        }
+      });
   }
 
   ngOnDestroy(): void {
-    this.paramMapSubscription?.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   onSubmit(): void {
     if (this.isEditing) {
-      // const updatedRoom = this.roomForm.value as IRoom;
-      // updatedRoom.amenities = (updatedRoom.amenities as unknown as string)
-      //   .split(',')
-      //   .map((a) => a.trim());
-
       const updatedRoom = this.roomForm.value as IRoom;
       updatedRoom.amenities = Array.isArray(updatedRoom.amenities)
         ? updatedRoom.amenities
         : [updatedRoom.amenities];
 
-      this.hotelsService.updateRoom(this.hotelId!, updatedRoom);
+      this.store.dispatch(
+        updateRoom({ hotelId: this.hotelId!, room: updatedRoom })
+      );
     } else {
       const newRoom = this.roomForm.value as IRoom;
       newRoom.amenities = Array.isArray(newRoom.amenities)
         ? newRoom.amenities
         : [newRoom.amenities];
-      this.hotelsService.addRoom(this.hotelId!, newRoom);
+      this.store.dispatch(addRoom({ hotelId: this.hotelId!, room: newRoom }));
     }
     this.location.back();
   }

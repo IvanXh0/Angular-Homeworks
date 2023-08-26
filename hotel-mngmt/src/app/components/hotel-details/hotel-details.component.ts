@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, map, mergeMap } from 'rxjs';
 import { IHotel } from 'src/app/interfaces/hotel-interface';
 import { HotelsService } from 'src/app/services/hotels.service';
 
@@ -14,7 +14,7 @@ export class HotelDetailsComponent implements OnInit, OnDestroy {
   selectedHotel: IHotel | undefined;
   updatedAmenities: string[] = [];
 
-  private paramMapSubscription: Subscription | undefined;
+  subscription: Subscription = new Subscription();
 
   constructor(
     private route: ActivatedRoute,
@@ -24,19 +24,23 @@ export class HotelDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.paramMapSubscription = this.route.paramMap.subscribe((params) => {
-      let id = +params.get('id')!;
-      this.selectedHotel = this.hotelsService.getHotelById(id);
-      this.titleService.setTitle(`Hotel | ${this.selectedHotel?.name}`);
-    });
+    this.subscription = this.route.params
+      .pipe(
+        map((params) => +params['id']),
+        mergeMap((id) =>
+          this.hotelsService.hotels$.pipe(
+            map((hotels) => hotels.find((hotel) => hotel.id === id))
+          )
+        )
+      )
+      .subscribe((hotel) => {
+        this.selectedHotel = hotel;
+        this.titleService.setTitle(`Hotel | ${this.selectedHotel?.name}`);
+      });
   }
 
   handleAmenitiesUpdated(updatedAmenities: string[]): void {
     this.updatedAmenities = updatedAmenities;
-  }
-
-  ngOnDestroy(): void {
-    this.paramMapSubscription?.unsubscribe();
   }
 
   onEdit(hotelId: number, roomId: number): void {
@@ -49,5 +53,9 @@ export class HotelDetailsComponent implements OnInit, OnDestroy {
     if (this.selectedHotel) {
       this.router.navigate(['/room-editor', hotelId, 'rooms']);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }

@@ -1,13 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, map, mergeMap } from 'rxjs';
 import { IRoom } from '../../interfaces/room-interface';
 import { HotelsService } from 'src/app/services/hotels.service';
 import { IHotel } from 'src/app/interfaces/hotel-interface';
 import { FormUtilsService } from 'src/app/services/form-utils.service';
 import { Location } from '@angular/common';
 import { Title } from '@angular/platform-browser';
+import { Store } from '@ngrx/store';
+import { HotelsState } from 'src/app/interfaces/hotel-state.interface';
+import { hotelsSelector } from 'src/app/store/hotels.selectors';
+import { addHotel, updateHotel } from 'src/app/store/hotels.actions';
 
 @Component({
   selector: 'app-hotel-forms-hotel',
@@ -68,17 +72,17 @@ export class HotelFormsHotelComponent implements OnInit, OnDestroy {
     rooms: new FormControl<IRoom[]>([]),
   });
 
-  private paramMapSubscription: Subscription | undefined;
+  subscription: Subscription = new Subscription();
 
   isEditing: boolean = false;
 
   constructor(
-    private hotelsService: HotelsService,
     private router: Router,
     private route: ActivatedRoute,
     private formUtils: FormUtilsService,
     private location: Location,
-    private titleService: Title
+    private titleService: Title,
+    private store: Store<HotelsState>
   ) {}
 
   isFieldInvalid(fieldName: string): boolean {
@@ -122,31 +126,55 @@ export class HotelFormsHotelComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.paramMapSubscription = this.route.paramMap.subscribe((params) => {
-      let id = +params.get('id')!;
-
-      const hotel = this.hotelsService.getHotelById(id);
-      if (id) {
-        this.isEditing = true;
-
-        this.titleService.setTitle(`Edit Hotel | ${hotel?.name}`);
-
+    this.subscription = this.route.params
+      .pipe(
+        map((params) => +params['id']),
+        mergeMap((id) =>
+          this.store
+            .select(hotelsSelector)
+            .pipe(map((hotels) => hotels.find((hotel) => hotel.id === id)))
+        )
+      )
+      .subscribe((hotel: IHotel | undefined) => {
         if (hotel) {
+          this.isEditing = true;
           this.hotelForm.patchValue(hotel);
+          this.titleService.setTitle(`Edit Hotel | ${hotel?.name}`);
         }
-      } else {
-        this.titleService.setTitle(`Add Hotel`);
-      }
 
-      if (!hotel && this.isEditing) {
-        this.titleService.setTitle(`Hotel | Not Found`);
-        this.router.navigate(['/not-found']);
-      }
-    });
-  }
+        if (!hotel && !this.isEditing) {
+          this.isEditing = false;
+          this.titleService.setTitle(`Add Hotel`);
+        }
 
-  ngOnDestroy(): void {
-    this.paramMapSubscription?.unsubscribe();
+        if (!hotel && this.isEditing) {
+          console.log(hotel);
+          this.titleService.setTitle(`Hotel | Not Found`);
+          this.router.navigate(['/not-found']);
+        }
+      });
+
+    // this.paramMapSubscription = this.route.paramMap.subscribe((params) => {
+    //   let id = +params.get('id')!;
+
+    //   const hotel = this.hotelsService.getHotelById(id);
+    //   if (id) {
+    //     this.isEditing = true;
+
+    //     this.titleService.setTitle(`Edit Hotel | ${hotel?.name}`);
+
+    //     if (hotel) {
+    //       this.hotelForm.patchValue(hotel);
+    //     }
+    //   } else {
+    //     this.titleService.setTitle(`Add Hotel`);
+    //   }
+
+    //   if (!hotel && this.isEditing) {
+    //     this.titleService.setTitle(`Hotel | Not Found`);
+    //     this.router.navigate(['/not-found']);
+    //   }
+    // });
   }
 
   onSubmit(): void {
@@ -154,10 +182,14 @@ export class HotelFormsHotelComponent implements OnInit, OnDestroy {
       const updatedHotel = {
         ...this.hotelForm.value,
         rooms: this.hotelForm.get('rooms')?.value,
-      };
-      this.hotelsService.updateHotel(updatedHotel as IHotel);
+      } as IHotel;
+
+      console.log(updatedHotel);
+      this.store.dispatch(updateHotel({ hotel: updatedHotel }));
+      // this.hotelsService.updateHotel(updatedHotel as IHotel);
     } else {
-      this.hotelsService.addHotel(this.hotelForm.value as IHotel);
+      this.store.dispatch(addHotel({ hotel: this.hotelForm.value as IHotel }));
+      // this.hotelsService.addHotel(this.hotelForm.value as IHotel);
     }
 
     this.router.navigate(['/management']);
@@ -166,5 +198,9 @@ export class HotelFormsHotelComponent implements OnInit, OnDestroy {
   onCancel(e: Event): void {
     e.preventDefault();
     this.location.back();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }
