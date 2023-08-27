@@ -126,6 +126,7 @@ export class HotelFormsHotelComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    const isEditing = this.route.snapshot.data['isEditing'] || false;
     this.subscription = this.route.params
       .pipe(
         map((params) => +params['id']),
@@ -148,33 +149,10 @@ export class HotelFormsHotelComponent implements OnInit, OnDestroy {
         }
 
         if (!hotel && this.isEditing) {
-          console.log(hotel);
           this.titleService.setTitle(`Hotel | Not Found`);
           this.router.navigate(['/not-found']);
         }
       });
-
-    // this.paramMapSubscription = this.route.paramMap.subscribe((params) => {
-    //   let id = +params.get('id')!;
-
-    //   const hotel = this.hotelsService.getHotelById(id);
-    //   if (id) {
-    //     this.isEditing = true;
-
-    //     this.titleService.setTitle(`Edit Hotel | ${hotel?.name}`);
-
-    //     if (hotel) {
-    //       this.hotelForm.patchValue(hotel);
-    //     }
-    //   } else {
-    //     this.titleService.setTitle(`Add Hotel`);
-    //   }
-
-    //   if (!hotel && this.isEditing) {
-    //     this.titleService.setTitle(`Hotel | Not Found`);
-    //     this.router.navigate(['/not-found']);
-    //   }
-    // });
   }
 
   onSubmit(): void {
@@ -184,12 +162,9 @@ export class HotelFormsHotelComponent implements OnInit, OnDestroy {
         rooms: this.hotelForm.get('rooms')?.value,
       } as IHotel;
 
-      console.log(updatedHotel);
       this.store.dispatch(updateHotel({ hotel: updatedHotel }));
-      // this.hotelsService.updateHotel(updatedHotel as IHotel);
     } else {
       this.store.dispatch(addHotel({ hotel: this.hotelForm.value as IHotel }));
-      // this.hotelsService.addHotel(this.hotelForm.value as IHotel);
     }
 
     this.router.navigate(['/management']);
