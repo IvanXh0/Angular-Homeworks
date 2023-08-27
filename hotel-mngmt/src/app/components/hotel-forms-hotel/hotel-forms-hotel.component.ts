@@ -126,7 +126,6 @@ export class HotelFormsHotelComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const isEditing = this.route.snapshot.data['isEditing'] || false;
     this.subscription = this.route.params
       .pipe(
         map((params) => +params['id']),
