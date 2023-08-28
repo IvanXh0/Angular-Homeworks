@@ -7,6 +7,9 @@ import {
   addRoom,
   addRoomFailure,
   addRoomSuccess,
+  getHotelById,
+  getHotelByIdFailure,
+  getHotelByIdSuccess,
   getHotels,
   getHotelsFailure,
   getHotelsSuccess,
@@ -88,6 +91,20 @@ export const reducer = createReducer(
     isLoading: false,
   })),
   on(updateRoomFailure, (state, action) => ({
+    ...state,
+    isLoading: false,
+    error: action.error,
+  })),
+  on(getHotelById, (state, action) => ({
+    ...state,
+    isLoading: true,
+  })),
+  on(getHotelByIdSuccess, (state, action) => ({
+    ...state,
+    isLoading: false,
+    hotel: action.hotel,
+  })),
+  on(getHotelByIdFailure, (state, action) => ({
     ...state,
     isLoading: false,
     error: action.error,

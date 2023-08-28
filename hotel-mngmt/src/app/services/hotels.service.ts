@@ -1,7 +1,7 @@
 import { Injectable, ɵIS_HYDRATION_DOM_REUSE_ENABLED } from '@angular/core';
 import { IHotel } from '../interfaces/hotel-interface';
 import { IRoom } from '../interfaces/room-interface';
-import { BehaviorSubject, Observable, map } from 'rxjs';
+import { BehaviorSubject, Observable, map, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -317,9 +317,18 @@ export class HotelsService {
     // return this.hotels;
   }
 
-  getHotelById(id: number): IHotel | undefined {
+  getHotelById(id: number): Observable<IHotel> {
     const hotels = this.hotelData.getValue();
-    return hotels.find((hotel) => hotel.id === id);
+    const foundHotel = hotels.find((hotel) => hotel.id === id);
+
+    if (foundHotel) {
+      return of(foundHotel);
+    } else {
+      return new Observable((observer) => {
+        observer.error('Hotel not found');
+        observer.complete();
+      });
+    }
   }
 
   addHotel(hotel: IHotel): void {

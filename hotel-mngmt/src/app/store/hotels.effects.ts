@@ -8,6 +8,9 @@ import {
   addRoom,
   addRoomFailure,
   addRoomSuccess,
+  getHotelById,
+  getHotelByIdFailure,
+  getHotelByIdSuccess,
   getHotels,
   getHotelsFailure,
   getHotelsSuccess,
@@ -80,6 +83,17 @@ export class HotelsEffects {
       ),
       map(() => updateRoomSuccess()),
       catchError((error) => of(updateRoomFailure({ error: error.message })))
+    )
+  );
+
+  getHotelById$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(getHotelById),
+      mergeMap(({ hotelId }: { hotelId: number }) =>
+        this.hotelsService.getHotelById(hotelId)
+      ),
+      map((hotel) => getHotelByIdSuccess({ hotel })),
+      catchError((error) => of(getHotelByIdFailure({ error: error.message })))
     )
   );
 }

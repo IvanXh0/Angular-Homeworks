@@ -61,3 +61,18 @@ export const updateRoomFailure = createAction(
   '[Hotels] Update Room Failure',
   props<{ error: string }>()
 );
+
+export const getHotelById = createAction(
+  '[Hotels] Get Hotel By Id',
+  props<{ hotelId: number }>()
+);
+
+export const getHotelByIdSuccess = createAction(
+  '[Hotels] Get Hotel By Id Success',
+  props<{ hotel: IHotel }>()
+);
+
+export const getHotelByIdFailure = createAction(
+  '[Hotels] Get Hotel By Id Failure',
+  props<{ error: string }>()
+);

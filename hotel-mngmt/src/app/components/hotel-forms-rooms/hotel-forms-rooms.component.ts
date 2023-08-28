@@ -13,6 +13,7 @@ import {
   of,
   pipe,
   switchMap,
+  take,
   tap,
 } from 'rxjs';
 import { IHotel } from 'src/app/interfaces/hotel-interface';
@@ -20,7 +21,12 @@ import { HotelsState } from 'src/app/interfaces/hotel-state.interface';
 import { IRoom } from 'src/app/interfaces/room-interface';
 import { FormUtilsService } from 'src/app/services/form-utils.service';
 import { HotelsService } from 'src/app/services/hotels.service';
-import { addRoom, updateRoom } from 'src/app/store/hotels.actions';
+import {
+  addRoom,
+  getHotelById,
+  getHotelByIdSuccess,
+  updateRoom,
+} from 'src/app/store/hotels.actions';
 import { hotelsSelector } from 'src/app/store/hotels.selectors';
 
 @Component({
@@ -128,41 +134,47 @@ export class HotelFormsRoomsComponent implements OnInit, OnDestroy {
           const hotelId = +params.get('hotelId')!;
           const roomId = +params.get('roomId')!;
 
-          return [hotelId, roomId];
+          return { hotelId, roomId };
         })
       )
-      .subscribe(([hotelId, roomId]) => {
-        const room = this.hotelsService.getRoomById(hotelId, roomId);
-        const hotel = this.hotelsService.getHotelById(hotelId);
+      .subscribe(({ hotelId, roomId }) => {
+        this.store
+          .select(hotelsSelector)
+          .pipe(
+            take(1),
+            map((hotels) => hotels.find((hotel) => hotel.id === hotelId))
+          )
+          .subscribe((hotel) => {
+            const room = hotel?.rooms.find((room) => room.id === roomId);
+            if (hotelId && roomId) {
+              this.isEditing = true;
+              this.hotelId = hotelId;
 
-        if (hotelId && roomId) {
-          this.isEditing = true;
-          this.hotelId = hotelId;
+              this.titleService.setTitle(`Edit Room | ${room?.name}`);
+              room?.amenities.join(', ');
 
-          this.titleService.setTitle(`Edit Room | ${room?.name}`);
-          room?.amenities.join(', ');
+              this.roomForm.patchValue(room as IRoom);
+            }
 
-          this.roomForm.patchValue(room as IRoom);
-        }
+            if (hotelId && !roomId) {
+              this.isEditing = false;
+              this.hotelId = hotelId;
 
-        if (hotelId && !roomId) {
-          this.isEditing = false;
-          this.hotelId = hotelId;
+              this.titleService.setTitle(`Add Room | ${hotel?.name}`);
+            }
 
-          this.titleService.setTitle(`Add Room | ${hotel?.name}`);
-        }
+            if (!room && this.isEditing) {
+              this.titleService.setTitle(`Room | Not Found`);
+              this.shouldRedirect = true;
+              return;
+            }
 
-        if (!room && this.isEditing) {
-          this.titleService.setTitle(`Room | Not Found`);
-          this.shouldRedirect = true;
-          return;
-        }
-
-        if (!hotel && !this.isEditing) {
-          this.titleService.setTitle(`Hotel | Not Found`);
-          this.shouldRedirect = true;
-          return;
-        }
+            if (!hotel && !this.isEditing) {
+              this.titleService.setTitle(`Hotel | Not Found`);
+              this.shouldRedirect = true;
+              return;
+            }
+          });
       });
   }
 
