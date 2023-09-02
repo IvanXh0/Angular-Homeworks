@@ -1,0 +1,167 @@
+<div class="container" *ngIf="!shouldRedirect">
+  <h2>{{ isEditing ? "Edit Room" : "Add New Room" }}</h2>
+
+  <form [formGroup]="roomForm" (ngSubmit)="onSubmit()">
+    <label for="name">Name</label>
+    <mat-form-field>
+      <input matInput id="name" placeholder="Name" formControlName="name" />
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('name') && isFieldTouchedOrDirty('name')"
+      >
+        {{ isRequired("name") ? "Name is required" : "" }}
+        {{ isMinLength("name") ? "Name can't be less than 3 characters" : "" }}
+        {{ isMaxLength("name") ? "Name can't be more than 30 characters" : "" }}
+      </p>
+    </mat-form-field>
+
+    <label for="description">Description</label>
+    <mat-form-field>
+      <input
+        matInput
+        id="description"
+        placeholder="Description"
+        formControlName="description"
+      />
+      <p
+        class="error"
+        *ngIf="
+          isFieldInvalid('description') && isFieldTouchedOrDirty('description')
+        "
+      >
+        {{ isRequired("description") ? "Description is required" : "" }}
+        {{
+          isMinLength("description")
+            ? "Description can't be less than 3 characters"
+            : ""
+        }}
+        {{
+          isMaxLength("description")
+            ? "Description can't be more than 200 characters"
+            : ""
+        }}
+      </p>
+    </mat-form-field>
+
+    <label for="image">Image URL</label>
+    <mat-form-field>
+      <input
+        matInput
+        id="image"
+        placeholder="Image URL"
+        formControlName="image"
+      />
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('image') && isFieldTouchedOrDirty('image')"
+      >
+        {{ isRequired("image") ? "Image is required" : "" }}
+        {{
+          isMinLength("image")
+            ? "Image URL can't be less than 3 characters"
+            : ""
+        }}
+        {{ isNotUrl("image") ? "Image URL is not valid" : "" }}
+      </p>
+    </mat-form-field>
+
+    <label for="price">Price</label>
+    <mat-form-field>
+      <input
+        matInput
+        id="price"
+        type="number"
+        placeholder="Price"
+        formControlName="price"
+      />
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('price') && isFieldTouchedOrDirty('price')"
+      >
+        {{ isRequired("price") ? "Price is required" : "" }}
+        {{ isMin("price") ? "Price can't be lower than 1" : "" }}
+      </p>
+    </mat-form-field>
+
+    <label for="persons">Max Persons</label>
+    <mat-form-field>
+      <input
+        matInput
+        id="persons"
+        type="number"
+        placeholder="Max Persons"
+        formControlName="persons"
+      />
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('persons') && isFieldTouchedOrDirty('persons')"
+      >
+        {{ isRequired("persons") ? "Persons is required" : "" }}
+        {{ isMin("persons") ? "Persons can't be lower than 1" : "" }}
+      </p>
+    </mat-form-field>
+
+    <label for="children">Max Children</label>
+    <mat-form-field>
+      <input
+        matInput
+        id="children"
+        type="number"
+        placeholder="Max Children"
+        formControlName="children"
+      />
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('children') && isFieldTouchedOrDirty('children')"
+      >
+        {{ isRequired("children") ? "Children is required" : "" }}
+        {{ isMin("children") ? "Children can't be lower than 0" : "" }}
+      </p>
+    </mat-form-field>
+
+    <label for="amenities">Amenities</label>
+    <mat-form-field>
+      <input
+        matInput
+        id="amenities"
+        placeholder="Amenities"
+        formControlName="amenities"
+      />
+      <p
+        class="error"
+        *ngIf="
+          isFieldInvalid('amenities') && isFieldTouchedOrDirty('amenities')
+        "
+      >
+        {{ isRequired("amenities") ? "Amenities is required" : "" }}
+      </p>
+    </mat-form-field>
+
+    <mat-checkbox
+      matCheckbox
+      name="isAvailable"
+      id="isAvailable"
+      formControlName="isAvailable"
+    >
+      Is Available
+    </mat-checkbox>
+
+    <div class="button-container">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="roomForm.invalid"
+      >
+        {{ isEditing ? "Update" : "Add" }}
+      </button>
+      <button mat-raised-button color="accent" (click)="onCancel($event)">
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>
+
+<ng-container *ngIf="shouldRedirect">
+  <app-not-found></app-not-found>
+</ng-container>

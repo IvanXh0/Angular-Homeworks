@@ -1,0 +1,155 @@
+<div class="container">
+  <h2>{{ isEditing ? "Edit Hotel" : "Add New Hotel" }}</h2>
+
+  <form (ngSubmit)="onSubmit()" [formGroup]="hotelForm">
+    <label for="name">Name</label>
+    <mat-form-field>
+      <input
+        matInput
+        id="name"
+        placeholder="Name"
+        formControlName="name"
+        required
+      />
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('name') && isFieldTouchedOrDirty('name')"
+      >
+        {{ isRequired("name") ? "Name is required" : "" }}
+        {{ isMinLength("name") ? "Name can't be less than 3 characters" : "" }}
+        {{ isMaxLength("name") ? "Name can't be more than 30 characters" : "" }}
+      </p>
+    </mat-form-field>
+
+    <label for="address">Address</label>
+    <mat-form-field>
+      <input
+        id="address"
+        matInput
+        placeholder="Address"
+        formControlName="address"
+        required
+      />
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('address') && isFieldTouchedOrDirty('address')"
+      >
+        {{ isRequired("address") ? "Address is required" : "" }}
+        {{
+          isMinLength("address")
+            ? "Address can't be less than 3 characters"
+            : ""
+        }}
+        {{
+          isMaxLength("address")
+            ? "Address can't be more than 30 characters"
+            : ""
+        }}
+      </p>
+    </mat-form-field>
+
+    <label for="city">City</label>
+    <mat-form-field>
+      <input
+        matInput
+        id="city"
+        placeholder="City"
+        formControlName="city"
+        required
+      />
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('city') && isFieldTouchedOrDirty('city')"
+      >
+        {{ isRequired("city") ? "City is required" : "" }}
+        {{ isMinLength("city") ? "City can't be less than 3 characters" : "" }}
+        {{ isMaxLength("city") ? "City can't be more than 20 characters" : "" }}
+      </p>
+    </mat-form-field>
+
+    <label for="country">Country</label>
+    <mat-form-field>
+      <input
+        id="country"
+        matInput
+        placeholder="Country"
+        formControlName="country"
+        required
+      />
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('country') && isFieldTouchedOrDirty('country')"
+      >
+        {{ isRequired("country") ? "Country is required" : "" }}
+        {{
+          isMinLength("country")
+            ? "Country can't be less than 3 characters"
+            : ""
+        }}
+        {{
+          isMaxLength("country")
+            ? "Country can't be more than 20 characters"
+            : ""
+        }}
+      </p>
+    </mat-form-field>
+
+    <label for="stars">Stars</label>
+    <mat-form-field>
+      <input
+        id="stars"
+        name="stars"
+        matInput
+        type="number"
+        placeholder="Stars"
+        formControlName="stars"
+        required
+      />
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('stars') && isFieldTouchedOrDirty('stars')"
+      >
+        {{ isRequired("stars") ? "Stars is required" : "" }}
+        {{ isMin("stars") ? "Can't have less than 1 star" : "" }}
+        {{ isMax("stars") ? "Can't have more than 5 stars" : "" }}
+      </p>
+    </mat-form-field>
+
+    <label for="image">Image URL:</label>
+    <mat-form-field>
+      <input
+        id="image"
+        matInput
+        placeholder="Image URL"
+        formControlName="image"
+        required
+      />
+      <p
+        class="error"
+        *ngIf="isFieldInvalid('image') && isFieldTouchedOrDirty('image')"
+      >
+        {{ isRequired("image") ? "Image is required" : "" }}
+        {{
+          isMinLength("image")
+            ? "Image URL can't be less than 3 characters"
+            : ""
+        }}
+        {{ isNotUrl("image") ? "Image URL is not valid" : "" }}
+      </p>
+    </mat-form-field>
+
+    <div class="button-container">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="hotelForm.invalid"
+      >
+        {{ isEditing ? "Update" : "Add" }}
+      </button>
+      <button mat-raised-button color="accent" (click)="onCancel($event)">
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>

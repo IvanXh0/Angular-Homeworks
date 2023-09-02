@@ -1,0 +1,64 @@
+<div class="container">
+  <mat-card class="hotel-card" *ngIf="selectedHotel; else notFound">
+    <img
+      mat-card-image
+      [src]="selectedHotel.image"
+      [alt]="selectedHotel.name"
+    />
+    <mat-card-content>
+      <h2>{{ selectedHotel.name }}</h2>
+      <p>
+        {{ selectedHotel.address }}, {{ selectedHotel.city }},
+        {{ selectedHotel.country }}
+      </p>
+      <p>Stars: {{ selectedHotel.stars }}</p>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="onAddRoom(selectedHotel.id)"
+      >
+        Add Room
+      </button>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-divider class="divider"></mat-divider>
+
+  <h3>Rooms:</h3>
+  <div class="room-container">
+    <div class="room-card" *ngFor="let room of selectedHotel?.rooms">
+      <img mat-list-avatar [src]="room.image" [alt]="room.name" />
+      <h3 mat-line>{{ room.name }}</h3>
+      <p mat-line>{{ room.description }}</p>
+      <p mat-line>Price: {{ room.price | currency : "USD" : "symbol" }}</p>
+      <p mat-line>Max Persons: {{ room.persons }}</p>
+      <p mat-line>Max Children: {{ room.children }}</p>
+      <!-- <p mat-line>
+        Amenities:<span mat-line *ngFor="let amenity of room.amenities">
+          {{ amenity }},</span
+        >
+      </p> -->
+      <p mat-line>Amenities: {{ room.amenities.join(", ") }}</p>
+
+      <p appAvalibility [isAvailable]="room.isAvailable">
+        Availibility: {{ room.isAvailable ? "Available" : "Unavailable" }}
+      </p>
+      <button mat-raised-button color="primary" [disabled]="!room.isAvailable">
+        Book Now
+      </button>
+      <button
+        class="btn-edit"
+        mat-raised-button
+        color="warn"
+        *ngIf="selectedHotel && room"
+        (click)="onEdit(selectedHotel.id, room.id)"
+      >
+        Edit Room
+      </button>
+    </div>
+  </div>
+</div>
+
+<ng-template #notFound>
+  <app-not-found></app-not-found>
+</ng-template>
