@@ -7,6 +7,8 @@ import { NotFoundComponent } from "./components/not-found/not-found.component";
 import { HotelFormsHotelComponent } from "./components/hotel-forms-hotel/hotel-forms-hotel.component";
 import { HotelFormsRoomsComponent } from "./components/hotel-forms-rooms/hotel-forms-rooms.component";
 import { AuthComponent } from "./components/auth/auth.component";
+import { AuthGuard } from "./guards/auth.guard";
+import { AdminGuard } from "./guards/admin.guard";
 
 const routes: Routes = [
   {
@@ -16,6 +18,7 @@ const routes: Routes = [
   {
     path: "management",
     component: HotelManagementComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: "details/:id",
@@ -24,18 +27,22 @@ const routes: Routes = [
   {
     path: "hotel-editor",
     component: HotelFormsHotelComponent,
+    canActivate: [AdminGuard],
   },
   {
     path: "hotel-editor/:id",
     component: HotelFormsHotelComponent,
+    canActivate: [AdminGuard],
   },
   {
     path: "room-editor/:hotelId/rooms",
     component: HotelFormsRoomsComponent,
+    canActivate: [AdminGuard],
   },
   {
     path: "room-editor/:hotelId/:roomId",
     component: HotelFormsRoomsComponent,
+    canActivate: [AdminGuard],
   },
   {
     path: "login",

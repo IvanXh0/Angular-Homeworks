@@ -8,4 +8,32 @@
   <span class="username" *ngIf="isLoggedIn"
     >Hello {{ userData?.displayName }}</span
   >
+  <a mat-button (click)="toggleSidebar()" *ngIf="userData?.roles?.['admin']">
+    <mat-icon>menu</mat-icon>
+  </a>
 </mat-toolbar>
+<mat-sidenav-container class="sidenav-container" *ngIf="isSideBarOpen">
+  <mat-sidenav #sidenav class="sidenav"> Admin Panel </mat-sidenav>
+  <mat-sidenav-content>
+    <div class="users" *ngFor="let user of users">
+      <p mat-line>User: {{ user.displayName }}</p>
+      <p mat-line>Role: {{ user.roles["admin"] ? "Admin" : "Regular User" }}</p>
+      <button
+        *ngIf="!user.roles['admin']"
+        mat-raised-button
+        color="primary"
+        (click)="changeToAdmin(user)"
+      >
+        Make Admin
+      </button>
+      <button
+        *ngIf="user.roles['admin']"
+        mat-raised-button
+        color="warn"
+        (click)="changeToUser(user)"
+      >
+        Revoke Admin
+      </button>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

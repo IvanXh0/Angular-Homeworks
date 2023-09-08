@@ -21,6 +21,7 @@ export class AuthComponent {
 
   showLoginForm: boolean = true;
   hidePassword: boolean = true;
+  loading: boolean = false;
 
   onSubmit(): void {
     const { name, email, password } = this.authForm.value;
@@ -29,7 +30,11 @@ export class AuthComponent {
       if (!email || !password || !name) {
         return;
       }
-      this.authService.registerUser(email, password, name);
+
+      this.loading = true;
+      this.authService.registerUser(email, password, name).finally(() => {
+        this.loading = false;
+      });
     } else {
       if (!email || !password) {
         return;
