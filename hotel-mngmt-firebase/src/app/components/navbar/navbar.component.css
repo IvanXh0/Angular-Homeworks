@@ -1,3 +1,9 @@
 .spacer {
   flex: 1;
 }
+
+.username {
+  font-weight: 400;
+  font-size: medium;
+  color: firebrick;
+}

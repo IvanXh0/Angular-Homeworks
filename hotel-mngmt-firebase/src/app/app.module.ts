@@ -37,6 +37,7 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
+import { AuthComponent } from './components/auth/auth.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
     NotFoundComponent,
     HotelFormsHotelComponent,
     HotelFormsRoomsComponent,
+    AuthComponent,
   ],
   imports: [
     BrowserModule,

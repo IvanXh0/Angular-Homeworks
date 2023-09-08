@@ -1,0 +1,49 @@
+<div class="wrapper">
+  <form [formGroup]="authForm" (ngSubmit)="onSubmit()">
+    <mat-form-field *ngIf="!showLoginForm">
+      <mat-label>Enter your name</mat-label>
+      <input
+        type="text"
+        matInput
+        placeholder="John Doe"
+        formControlName="name"
+      />
+      <mat-error>Name is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Enter your email</mat-label>
+      <input
+        matInput
+        placeholder="example@mail.com"
+        type="email"
+        formControlName="email"
+      />
+      <mat-error>Email is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Enter your password</mat-label>
+      <input
+        [type]="hidePassword ? 'password' : 'text'"
+        matInput
+        placeholder="Enter your password"
+        formControlName="password"
+      />
+      <mat-error>Password is required</mat-error>
+      <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword">
+        <mat-icon>{{
+          hidePassword ? "visibility_off" : "visibility"
+        }}</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit">
+      {{ showLoginForm ? "Login" : "Register" }}
+    </button>
+    <mat-hint
+      >{{ showLoginForm ? "Not registered yet?" : "Already registered?" }}
+      <a (click)="showLoginForm = !showLoginForm">Click here.</a>
+    </mat-hint>
+  </form>
+</div>

@@ -3,4 +3,9 @@
   <span class="spacer"></span>
   <a mat-raised-button color="warn" routerLink="/">Home</a>
   <a mat-button routerLink="/management">Management</a>
+  <a mat-button routerLink="/login" *ngIf="!isLoggedIn">Login</a>
+  <a mat-button *ngIf="isLoggedIn" (click)="logout()">Logout</a>
+  <span class="username" *ngIf="isLoggedIn"
+    >Hello {{ userData?.displayName }}</span
+  >
 </mat-toolbar>
