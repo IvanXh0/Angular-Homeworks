@@ -31,6 +31,7 @@
         mat-raised-button
         color="warn"
         (click)="changeToUser(user)"
+        [disabled]="user?.displayName === 'Almighty Admin'"
       >
         Revoke Admin
       </button>
