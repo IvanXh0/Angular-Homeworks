@@ -41,7 +41,6 @@ import { AuthComponent } from "./components/auth/auth.component";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatSidenavModule } from "@angular/material/sidenav";
-import { SidebarComponent } from './components/sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +54,6 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
     HotelFormsHotelComponent,
     HotelFormsRoomsComponent,
     AuthComponent,
-    SidebarComponent,
   ],
   imports: [
     BrowserModule,
